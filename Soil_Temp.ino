@@ -61,11 +61,14 @@ float GetSoilTemp()
     SPdata[i] = SoilTempDevice.read();
   }
 
+  
+  // Mandatory CRC check that the Scratchpad data is valid
+  // Returns 1000 temperature if something failed
   if (OneWire::crc8(SPdata, 8) != SPdata[8]) {
     return 1000;
   }
 
-  int16_t raw = (SPdata[1] << 8) | SPdata[0]; // Temp data is stored in first 2 bits
+  int16_t raw = (SPdata[1] << 8) | SPdata[0]; // Temp data is stored in first 2 bits of data[1]
  
   byte cfg = (SPdata[4] & 0x60);
   // at lower res, the low bits are undefined, so let's zero them
